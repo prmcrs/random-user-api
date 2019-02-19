@@ -1,4 +1,4 @@
-# Random.User.Rest
+# Random user Web API
 Free API in .Net Core to exercise the coding of a RESTful architectural style API.
 
 ![Net.Core](https://img.shields.io/badge/net--core-2.2-blue.svg)
