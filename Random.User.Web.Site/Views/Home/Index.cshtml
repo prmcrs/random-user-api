@@ -1,5 +1,4 @@
-﻿
-@model List<RootObject>
+@model IReadOnlyList<RootObject>
 
 @{
     ViewData["Title"] = "Home users";
@@ -10,20 +9,23 @@
     {
         <div class="alert alert-warning" role="alert">@apiError</div>
     }
-    <h4>Api endpoint execution result <span class="badge badge-secondary"> @Model.Count() registers</span></h4>
-    <br />
+    <h4>API endpoint results <span class="badge badge-secondary">@Model.Count users</span></h4>
+    @if (Model.Count == 0 && ViewData["ApiError"] is null)
+    {
+        <p class="text-muted">No users are available. The API may have started without sample data.</p>
+    }
+    <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover table-sm">
         <caption>List of users</caption>
         <thead class="thead-dark">
             <tr class="text-center">
-                <th scope="col">UserName</th>
+                <th scope="col">Username</th>
                 <th scope="col">Name</th>
                 <th scope="col">Gender</th>
-                <th scope="col">BirthDate</th>
+                <th scope="col">Birth date</th>
                 <th scope="col">Age</th>
                 <th scope="col">Location</th>
                 <th scope="col">Eldest</th>
-                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -32,26 +34,24 @@
             <tr class="@(item.isTheEldest ? "table-success" : "")">
                 <td>@item.userName</td>
                 <td>@CapitalLetterHelper.FirstCharToUpper(item.name)</td>
-                <td>@CapitalLetterHelper.FirstCharToUpper(@item.gender)</td>
-                <td>@item.birthDate</td>
+                <td>@CapitalLetterHelper.FirstCharToUpper(item.gender)</td>
+                <td>@item.birthDate.ToString("yyyy-MM-dd")</td>
                 <td>@item.age</td>
                 <td>
                     @if (item.location == null)
                     {
-                        <div>no data</div>
+                        <span class="text-muted">No data</span>
                     }
                     else
                     {
-                        @item.location.street, @item.location.city, @item.location.state
+                        @($"{item.location.street}, {item.location.city}, {item.location.state}")
                     }
                 </td>
-                <td>@item.isTheEldest</td>
-                <td class="text-center">
-                    <span class="text-muted">Use REST API</span>
-                </td>
+                <td>@(item.isTheEldest ? "Yes" : "No")</td>
             </tr>
             }
 
         </tbody>
     </table>
+    </div>
 </section>
