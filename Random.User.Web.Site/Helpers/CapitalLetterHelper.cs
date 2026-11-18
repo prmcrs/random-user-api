@@ -7,8 +7,9 @@ namespace Random.User.Web.Site.Helpers
 {
     public class CapitalLetterHelper
     {
-        public static string FirstCharToUpper(string value)
+        public static string FirstCharToUpper(string? value)
         {
+            if (string.IsNullOrEmpty(value)) return string.Empty;
             char[] array = value.ToCharArray();
             // Handle the first letter in the string.  
             if (array.Length >= 1)
