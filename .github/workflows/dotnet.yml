@@ -1,0 +1,15 @@
+name: .NET CI
+on:
+  push:
+  pull_request:
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: dotnet restore Random.User.Rest.sln
+      - run: dotnet build Random.User.Rest.sln --no-restore --configuration Release
+      - run: dotnet test Random.User.Rest.sln --no-build --configuration Release

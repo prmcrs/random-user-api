@@ -1,57 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Random.User.Web.Site.Helpers;
-using Random.User.Web.Site.Infrastructure;
-using Random.User.Web.Site.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
-using System.Threading.Tasks;
+using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
+using Random.User.Web.Site.Helpers;
+using Random.User.Web.Site.Models;
 
-namespace Random.User.Web.Site.Controllers
+namespace Random.User.Web.Site.Controllers;
+
+public sealed class HomeController(IHttpClientFactory clientFactory, ILogger<HomeController> logger) : Controller
 {
-    public class HomeController : Controller
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        public readonly ConfigurationOptions configuration;
-        public HomeController(ConfigurationOptions configuration)
+        try
         {
-            this.configuration = configuration;
+            var client = clientFactory.CreateClient("RandomUserApi");
+            var users = await client.GetFromJsonAsync<List<RootObject>>("user?page=1", cancellationToken);
+            return View(users ?? []);
         }
-
-
-        public IActionResult Index()
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
         {
-            List<RootObject> ppl = new List<RootObject>();
-            Uri generatorUri = new Uri(configuration.ApiURI + "user?page=1");
-            var client = new WebClient();
-            string data = client.DownloadString(generatorUri.AbsoluteUri);
-            List<RootObject> rs = JsonConvert.DeserializeObject<List<RootObject>>(data);
-
-            if (rs.Count != 0)
-            {
-                foreach (var i in rs)
-                {
-                    ppl.Add(i);
-                }
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-
-            return View(ppl);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            logger.LogWarning(ex, "The user API is unavailable.");
+            ViewData["ApiError"] = "The API is unavailable. Start Random.User.Rest and refresh the page.";
+            return View(new List<RootObject>());
         }
     }
+
+    public IActionResult Privacy() => View();
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error() => View(new ErrorViewModel
+    {
+        RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+    });
 }
