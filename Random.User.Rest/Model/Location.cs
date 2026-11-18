@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Random.User.Rest.Model
 {
@@ -7,15 +7,15 @@ namespace Random.User.Rest.Model
     {
         [Key]
         public int LocationId { get; set; }
-        public string State { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string PostCode { get; set; }
+        public string State { get; set; } = "";
+        public string Street { get; set; } = "";
+        public string City { get; set; } = "";
+        public string PostCode { get; set; } = "";
 
         public int UserId { get; set; }
 
-        [ForeignKey("UserForeignKey")]
-        public User User { get; set; }
+        [JsonIgnore]
+        public User? User { get; set; }
     }
 
 }

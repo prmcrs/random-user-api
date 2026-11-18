@@ -10,6 +10,6 @@ namespace Random.User.Rest.Infrastructure
     public class ConfigurationOptions
     {
         public int MaxUsersLimit { get; set; }
-        public string GeneratorSiteURI { get; set; }
+        public string GeneratorSiteURI { get; set; } = "";
     }
 }

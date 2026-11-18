@@ -9,24 +9,16 @@ namespace Random.User.Rest.Model
         {
         }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Location> Locations { get; set; }
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Location> Locations => Set<Location>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
-
-            //modelBuilder.Entity<User>()
-            //    .HasOne(ul => ul.Location)
-            //    .WithOne(u => u.User)
-            //    .HasForeignKey<Location>(b => b.IdUser);
-
-            //modelBuilder.Entity<User>()
-            //    .HasOne(a => a.Location).WithOne(b => b.User)
-            //    .HasForeignKey<Location>(e => e.UserId);
-
-            //modelBuilder.Entity<User>().ToTable("User");
-            //modelBuilder.Entity<Location>().ToTable("User");
+            modelBuilder.Entity<User>()
+                .HasOne(user => user.Location)
+                .WithOne(location => location.User)
+                .HasForeignKey<Location>(location => location.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -15,6 +15,14 @@ namespace Random.User.Web.Site.Helpers
         public string userName { get; set; }
         public int age { get; set; }
         public bool isTheEldest { get; set; }
-        public object location { get; set; }
+        public LocationSummary? location { get; set; }
+    }
+
+    public class LocationSummary
+    {
+        public string? street { get; set; }
+        public string? city { get; set; }
+        public string? state { get; set; }
+        public string? postCode { get; set; }
     }
 }
